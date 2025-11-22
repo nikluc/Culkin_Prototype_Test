@@ -7,6 +7,8 @@ public class CardAnimationController : MonoBehaviour
     [Header("References")]
     public GameObject icon;
     public GameObject cardFace;
+    public AudioClip flipSound;
+
 
     [Header("Animation Settings")]
     public float flipDuration = 0.2f;
@@ -50,7 +52,8 @@ public class CardAnimationController : MonoBehaviour
     private IEnumerator FlipAnimation(bool showFace, System.Action onComplete)
     {
         yield return AnimateScaleX(1f, 0f, flipDuration);
-        icon.SetActive(showFace);
+        icon.SetActive(showFace); 
+        AudioManager.Instance.PlaySFX(flipSound, 1);
         yield return AnimateScaleX(0f, 1f, flipDuration);
         currentAnimation = null;
         onComplete?.Invoke();

@@ -18,13 +18,23 @@ public class CardItem : MonoBehaviour
 
     private void Awake()
     {
-        _canvasGroup = GetComponent<CanvasGroup>();
-        gameManager = FindObjectOfType<GameManager>();
-        _cardAnimationController = GetComponent<CardAnimationController>();
+        if (_cardAnimationController == null)
+        {
+            _cardAnimationController = GetComponent<CardAnimationController>();
+        }
+        if (gameManager == null)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
+        if (_canvasGroup == null)
+        {
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
     }
 
     public void CardSetup(bool skipreset = false)
     {
+        Awake();
         _cardAnimationController.icon.GetComponent<Image>().sprite = cardData.cardSprite;
         gameObject.name = cardData.name;
         _cardAnimationController.icon.SetActive(false);

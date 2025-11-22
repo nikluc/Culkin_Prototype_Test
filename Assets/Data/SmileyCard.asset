@@ -15,4 +15,3 @@ MonoBehaviour:
   cardName: ReqularSmile
   cardSprite: {fileID: 21300000, guid: 47a9f36a0a3ff5443bbf31b7371c7c08, type: 3}
   cardColor: {r: 1, g: 0.5990566, b: 0.5990566, a: 1}
-  flipSound: {fileID: 0}

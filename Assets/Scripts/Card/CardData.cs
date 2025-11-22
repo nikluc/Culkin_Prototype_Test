@@ -6,5 +6,4 @@ public class CardData : ScriptableObject
     public string cardName;
     public Sprite cardSprite;
     public Color cardColor;
-    public AudioClip flipSound;
 }
