@@ -89,6 +89,8 @@ GameObject:
   - component: {fileID: 5434250253781156910}
   - component: {fileID: 5434250253781156909}
   - component: {fileID: -3189670250999247027}
+  - component: {fileID: 8007373338235689445}
+  - component: {fileID: 55308801096999886}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -198,7 +200,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5434250253781156910}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 55308801096999886}
+        m_TargetAssemblyTypeName: CardItem, Assembly-CSharp
+        m_MethodName: CardFlip
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!225 &-3189670250999247027
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -211,6 +225,60 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8007373338235689445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5434250253781157842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ece17be681046844f80c1ffd793426a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 5434250252222168132}
+  cardFace: {fileID: 5434250254013228539}
+  flipDuration: 0.2
+  vanishDuration: 0.3
+  vanishEaseCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &55308801096999886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5434250253781157842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed046d9f494be84b8460a945cba8479, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardData: {fileID: 0}
+  revealDuration: 3
 --- !u!1 &5434250254013228539
 GameObject:
   m_ObjectHideFlags: 0
