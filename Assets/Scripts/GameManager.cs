@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public TMP_InputField columnInput;
     public GameObject mainmenu;
     public GameObject inGamemenu;
+    public Button startButton;
 
     [Header("In-Game UI refrence")]
     public TextMeshProUGUI scoreText;
@@ -142,6 +143,42 @@ public class GameManager : MonoBehaviour
             Destroy(child.gameObject);
         }
         _totalCardList.Clear();
+    }
+
+    private void Update()
+    {
+        if (rowInput.text == "" || columnInput.text == "")
+        {
+            startButton.interactable = false;
+            return;
+        }
+    }
+
+    public void CheckGridSize()
+    {
+        if( rowInput.isFocused || rowInput.isFocused)
+        {
+            startButton.interactable = false;
+            return;
+        }
+        try
+        {
+            gridSize = new Vector2Int(int.Parse(rowInput.text), int.Parse(columnInput.text));
+            if ((gridSize.x * gridSize.y) % 2 != 0)
+            {
+                startButton.interactable = false;
+            }
+            else
+            {
+                startButton.interactable = true;
+            }
+        }
+        catch
+        {
+            // Invalid input is given
+            Debug.LogWarning("Grid size invalid. Please choose an even number of total cards.");
+            startButton.interactable = false;
+        }
     }
 
     private void PairSetup()
