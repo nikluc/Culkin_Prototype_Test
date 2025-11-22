@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("References Carw Spawning")]
+    [Header("References Card Spawning")]
     public GameObject gridLayout;
     public GameObject cardPrefab;
 
