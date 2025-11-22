@@ -14,19 +14,24 @@ public class CardItem : MonoBehaviour
 
     private CanvasGroup _canvasGroup;
     private CardAnimationController _cardAnimationController;
+    private GameManager gameManager;
+
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
+        gameManager = FindObjectOfType<GameManager>();
         _cardAnimationController = GetComponent<CardAnimationController>();
-        CardSetup();
     }
 
-    public void CardSetup()
+    public void CardSetup(bool skipreset = false)
     {
         _cardAnimationController.icon.GetComponent<Image>().sprite = cardData.cardSprite;
         gameObject.name = cardData.name;
         _cardAnimationController.icon.SetActive(false);
-        ResetCard();
+        if (!skipreset)
+        {
+            ResetCard();
+        }
     }
 
     public bool IsFlipped()
@@ -54,7 +59,6 @@ public class CardItem : MonoBehaviour
         else
         {
             StopCoroutine(RevealThenFlipBack());
-
         }
     }
 
@@ -72,7 +76,7 @@ public class CardItem : MonoBehaviour
 
     public void CardFlip(bool autoTriggered = false)
     {
-
+        if (gameManager == null) return;
         if (isFliped) return;
 
     
@@ -80,13 +84,10 @@ public class CardItem : MonoBehaviour
 
             _cardAnimationController.FlipFaceUp(() =>
             {
-
-                //testing to see if the flip back was auto triggered
                 if(!autoTriggered)
                 {
                     // Notify GameManager that this card is flipped and ready for matching check
-
-                    FlipBack();
+                    gameManager.OnCardFlipped(this);
                 }
             });
         
