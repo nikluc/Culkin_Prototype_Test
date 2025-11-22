@@ -62,62 +62,10 @@ public class GameManager : MonoBehaviour
         // PairSetup();
     }
 
-    public void ResetScore(bool allReset = true)
-    {
-        _matchCount = 0;
-        _multiplier = 1;
-        if (allReset)
-        {
-            _totalScore = 0;
-            _cardsFound = 0;
-
-        }
-
-        for (int i = 0; i < comboFill.Length; i++)
-        {
-            comboFill[i].SetActive(false);
-        }
-        scoreText.text = _totalScore.ToString();
-        multiplierText.text = "X(" + _multiplier.ToString() + ")";
-    }
-
-    public void OnMatchFound()
-    {
-        _matchCount++;
-
-        for (int i = 0; i < comboFill.Length; i++)
-        {
-            comboFill[i].SetActive(i < _matchCount);
-        }
-
-        // Increase multiplier every 3 matches
-        if (_matchCount % multiplierThreshold == 0)
-        {
-            _multiplier++;
-            _matchCount = 0;
-        }
-
-        int scoreToAdd = _baseScorePerMatch * _multiplier;
-        _totalScore += scoreToAdd;
-
-        scoreText.text = _totalScore.ToString();
-        multiplierText.text = "X("+_multiplier.ToString()+")";
-
-        _cardsFound += 2;
-
-        if(_cardsFound >= _totalCardList.Count)
-        {
-            Debug.Log("All cards found! Restarting game...");
-            AudioManager.Instance.PlaySFX(win, 1);
-            Invoke("RestartGame", 1f);
-        }
-
-        Debug.Log($"Match {_matchCount} found! Added {scoreToAdd} points. Total score: {_totalScore}, Multiplier: x{_multiplier}");
-    }
-
-
+    #region GameSetup
     public void StartGame()
     {
+        ResetScore();
         mainmenu.SetActive(false);
         inGamemenu.SetActive(true);
         gridLayout.SetActive(true);
@@ -136,6 +84,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Clear existing cards from previous game setup
+
     public void ClearCards()
     {
         foreach (Transform child in gridLayout.transform)
@@ -145,18 +94,10 @@ public class GameManager : MonoBehaviour
         _totalCardList.Clear();
     }
 
-    private void Update()
-    {
-        if (rowInput.text == "" || columnInput.text == "")
-        {
-            startButton.interactable = false;
-            return;
-        }
-    }
 
     public void CheckGridSize()
     {
-        if( rowInput.isFocused || rowInput.isFocused)
+        if (rowInput.isFocused || rowInput.isFocused)
         {
             startButton.interactable = false;
             return;
@@ -218,22 +159,72 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnCardFlipped(CardItem flippedCard)
+    private CardItem CreateCard(CardData data, bool loaded = false)
     {
-        if (_firstSelectedCard == null)
-        {
-            _firstSelectedCard = flippedCard;
-        }
-        else
-        {
-            CardItem secondSelectedCard = flippedCard;
+        GameObject tempCard = Instantiate(cardPrefab, gridLayout.transform);
+        tempCard.transform.localScale = Vector3.one;
+        CardItem tempItem = tempCard.GetComponent<CardItem>();
+        tempItem.cardData = data;
+        tempItem.CardSetup(loaded);
+        return tempItem;
+    }
 
-            // Launch pair comparison coroutine independently
-            StartCoroutine(HandlePair(_firstSelectedCard, secondSelectedCard));
 
-            // Reset for next pair
-            _firstSelectedCard = null;
+    #endregion
+
+    #region Score Management
+
+    public void ResetScore(bool allReset = true)
+    {
+        _matchCount = 0;
+        _multiplier = 1;
+        if (allReset)
+        {
+            _totalScore = 0;
+            _cardsFound = 0;
+
         }
+
+        for (int i = 0; i < comboFill.Length; i++)
+        {
+            comboFill[i].SetActive(false);
+        }
+        scoreText.text = _totalScore.ToString();
+        multiplierText.text = "X(" + _multiplier.ToString() + ")";
+    }
+
+    public void OnMatchFound()
+    {
+        _matchCount++;
+
+        for (int i = 0; i < comboFill.Length; i++)
+        {
+            comboFill[i].SetActive(i < _matchCount);
+        }
+
+        // Increase multiplier every 3 matches
+        if (_matchCount % multiplierThreshold == 0)
+        {
+            _multiplier++;
+            _matchCount = 0;
+        }
+
+        int scoreToAdd = _baseScorePerMatch * _multiplier;
+        _totalScore += scoreToAdd;
+
+        scoreText.text = _totalScore.ToString();
+        multiplierText.text = "X("+_multiplier.ToString()+")";
+
+        _cardsFound += 2;
+
+        if(_cardsFound >= _totalCardList.Count)
+        {
+            Debug.Log("All cards found! Restarting game...");
+            AudioManager.Instance.PlaySFX(win, 1);
+            Invoke("RestartGame", 1f);
+        }
+
+        Debug.Log($"Match {_matchCount} found! Added {scoreToAdd} points. Total score: {_totalScore}, Multiplier: x{_multiplier}");
     }
 
     private IEnumerator HandlePair(CardItem card1, CardItem card2)
@@ -264,29 +255,44 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    private CardItem CreateCard(CardData data, bool loaded = false)
-    {
-        GameObject tempCard = Instantiate(cardPrefab, gridLayout.transform);
-        tempCard.transform.localScale = Vector3.one;
-        CardItem tempItem = tempCard.GetComponent<CardItem>();
-        tempItem.cardData = data;
-        tempItem.CardSetup(loaded);
-        return tempItem;
-    }
 
-    private void Shuffle<T>(List<T> list)
+    #endregion
+
+    private void Update()
     {
-        int n = list.Count;
-        while (n > 1)
+        if (rowInput.text == "" || columnInput.text == "")
         {
-            n--;
-            int k = _rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+            startButton.interactable = false;
+            return;
         }
     }
 
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+
+    public void OnCardFlipped(CardItem flippedCard)
+    {
+        if (_firstSelectedCard == null)
+        {
+            _firstSelectedCard = flippedCard;
+        }
+        else
+        {
+            CardItem secondSelectedCard = flippedCard;
+
+            // Launch pair comparison coroutine independently
+            StartCoroutine(HandlePair(_firstSelectedCard, secondSelectedCard));
+
+            // Reset for next pair
+            _firstSelectedCard = null;
+        }
+    }
+
+    #region Save & Load
 
     // Save current game state
     public void SaveGame()
@@ -398,6 +404,10 @@ public class GameManager : MonoBehaviour
     }
 
 
+    #endregion
+
+
+    #region Helpers
     private void ApplyGridVisuals()
     {
         if (_gridLayoutGroup == null) return;
@@ -430,10 +440,22 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public void QuitGame()
+
+    private void Shuffle<T>(List<T> list)
     {
-        Application.Quit();
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = _rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
+    #endregion
+
+
 }
 
 
